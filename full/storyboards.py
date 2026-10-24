@@ -1,0 +1,140 @@
+# Storyboards for parts 2-9. Anchors: number (s) or "word@approx_s" (nearest matching spoken word).
+# Content only from what's spoken.
+SB = {}
+
+SB[2] = [
+ dict(id='a1', type='list', side='L', t0=0.0, t1=15.0, kicker='What I see in my students', title='Profitable in *month one*…',
+      rows=[dict(text='…but losing their *psychology*', at='psychology@7.5', mark='x'),
+            dict(text='Losing all the money', at='money@11', mark='x'),
+            dict(text='Losing all the trades', at='trades@12', mark='x')]),
+ dict(id='a2', type='pill', side='N', t0=17.4, t1=19.8, text='It happened to me too', at='mere@18.5'),
+ dict(id='a3', type='chart', side='F', t0=19.8, t1=30.9, kicker='The fast-success trap',
+      title=dict(text='Succeed too fast… *and you fall*', at=20.2), foot=dict(text='Getting back up isn’t possible for everyone.', at='khade@25.5'),
+      up=dict(text='Successful too fast', at='successful@21'), down=dict(text='You fall', at='girte@23.4'), rec=dict(text='Getting back up', at='khade@25.6')),
+ dict(id='a4', type='chips', side='R', t0=31.1, t1=43.0, kicker='Inside your brain', title='*Positive* hormones',
+      chips=[dict(text='Winning', at='winning@35.5', hot=True), dict(text='Winning', at='winning@36.2', hot=True), dict(text='Winning', at='winning@36.9', hot=True), dict(text='Winning', at='winning@37.5', hot=True),
+             dict(text='Negative hormones', at='negative@39.5', sec=True), dict(text='You don’t know how to tackle it', at='tackle@41.5')]),
+ dict(id='a5', type='quote', side='L', t0=43.0, t1=49.5, kicker='Remember',
+      lines=[dict(text='Losing is also', at='losing@47'), dict(text='*important.*', at='important@48')],
+      sub=dict(text='Because you haven’t seen what <b>losing</b> is.', at='seen@44')),
+ dict(id='a6', type='flow', side='L', t0=49.6, t1=59.6, kicker='Where the journey really starts', title='1000s of trades → *one* trade',
+      steps=[dict(label='Trade 1000s of times', at='hazaar@50.5'), dict(label='Lose & learn', at='lose@52'), dict(label='One profitable trade', at='profitable@55'), dict(label='Journey begins', at='journey@57.5', icon='star')]),
+]
+
+SB[3] = [
+ dict(id='b1', type='title', side='L', t0=0.0, t1=5.4, kicker='The catch',
+      lines=[dict(text='It can take *time*', at='time@1.8'), dict(text='& lots of *backtesting*', at='backtesting@3.8')]),
+ dict(id='b2', type='compare', side='F', t0=5.5, t1=31.6, kicker='The biggest funda', title='Backtesting *vs* forward testing',
+      left=dict(kicker='Easy', title='Backtesting', at='backtesting@12.5', items=[dict(text='Chart replay', at='replay@15.5'), dict(text='Tested *multiple* strategies', at='strategies@17.5'), dict(text='*10 strategies* in 5 minutes', at='strategies@22', ic='10')]),
+      right=dict(kicker='Real', title='Forward testing', at='forward@26', items=[dict(text='I have to *think*', at='sochna@27.8'), dict(text='That’s the *difference*', at='difference@30.5')])),
+ dict(id='b3', type='flow', side='L', t0=31.7, t1=55.9, kicker='A backtesting trade', title='Easy on the *replay*',
+      steps=[dict(label='Mark zones', at='marking@36', icon='zone'), dict(label='Buy', at='buying@38.6', icon='arrow'), dict(label='Set RR', at='rr@40.5', icon='target'), dict(label='Hammer forms', at='hammer@41.5', icon='chart')],
+      chips=[dict(text='Exit / target hit', at='target@50.5'), dict(text='1:20 achieved', at='1:20@52.5'), dict(text='Logged in Excel', at='excel@54.5')]),
+ dict(id='b4', type='big', side='F', t0=56.0, t1=61.75, kicker='Ask yourself',
+      lines=[dict(text='Which *psychology*', at='psychology@57.3'), dict(text='which *emotions*', at='emotions@60.3', hit=True)],
+      subs=[dict(text='…is this really building?', at='increase@60.8')]),
+]
+
+SB[4] = [
+ dict(id='c1', type='list', side='L', t0=0.0, t1=10.3, kicker='Myth vs reality', title='Emotions in trading',
+      rows=[dict(text='“Don’t care about emotions”', at='emotions@3.4', mark='x', mark_at='but@4.6', strike='but@4.7', strike_w=340),
+            dict(text='Emotions are *everything*', at='everything@6.2', mark='ok'),
+            dict(text='Just no emotional *decisions*', at='decisions@9.0', mark='ok')]),
+ dict(id='c2', type='quote', side='L', t0=10.4, t1=15.0, kicker='The truth',
+      lines=[dict(text='Trade with *emotions*', at='emotions@12'), dict(text='Trade with *fear*', at='dar@13.6')]),
+ dict(id='c3', type='bars', side='R', t0=15.0, t1=25.9, kicker='Real money', title='Even a losing *stop loss*…',
+      rows=[dict(label='$10', right='losing stop loss', pct=4, at='10@19'), dict(label='$1,000', right='losing stop loss', pct=50, at='1000@20.2'), dict(label='$2,000', right='losing stop loss', pct=100, at='2000@21.5')],
+      sub=dict(text='…you will feel it.', at='loss@23.5')),
+ dict(id='c4', type='pill', side='N', t0=26.0, t1=29.8, text='Thoda dar toh lagega hi', at='dar@27.5'),
+ dict(id='c5', type='compare', side='F', t0=29.9, t1=38.8, kicker='Where fear shows up', title='The emotions backtesting *hides*',
+      left=dict(kicker='Practice', title='Backtesting', at='backtesting@31', items=[dict(text='No real fear', at='dar@34.7', ic='0')]),
+      right=dict(kicker='Real', title='Forward testing', at='forward@37.5', items=[dict(text='The *fear* arrives', at='forward@37.8', ic='!')])),
+ dict(id='c6', type='flow', side='L', t0=38.9, t1=54.4, kicker='The path', title='Your *life-changing* trade',
+      steps=[dict(label='1000s backtested', at='backtesting@41'), dict(label='1000s forward tested', at='forward@46'), dict(label='The trade you waited for', at='trade@49', icon='target'), dict(label='Life changes', at='life@53', icon='star')]),
+]
+
+SB[5] = [
+ dict(id='d1', type='title', side='L', t0=0.1, t1=5.6, kicker='Life turning point',
+      lines=[dict(text='You have to', at='have@2.5'), dict(text='*work hard*', at='work@3.5')]),
+ dict(id='d2', type='big', side='F', t0=5.7, t1=12.6, kicker='Right now', num=dict(text='5:30', at='5:30@7.5'),
+      lines=[dict(text='*AM*', at='am@8.3')], subs=[dict(text='Making these videos for you', at='videos@10.5')]),
+ dict(id='d3', type='list', side='R', t0=12.7, t1=20.3, kicker='While the world sleeps', title='Everyone is *sleeping*',
+      rows=[dict(text='Everyone is sleeping', at='sleeping@15.5'), dict(text='Me & my teammates are here', at='teammates@16.7', mark='ok'), dict(text='Making good creation', at='creation@20', ic='★')]),
+ dict(id='d4', type='title', side='L', t0=20.4, t1=28.4, kicker='Important tip for traders',
+      lines=[dict(text='Wake up at', at='utna@25.5'), dict(text='*3:30 – 4 AM*', at='baje@26.5', sfx='impact-bass-1')]),
+ dict(id='d5', type='timeline', side='F', t0=28.5, t1=47.3, kicker='The reason', title='You get *2–3 hours* before the world',
+      hours=[3, 4, 5, 6, 7, 8, 9, 10, 11],
+      pins=[dict(h=8, label='Most people', at='8@32.3'), dict(h=9, label='', at='9@33'), dict(h=10, label='', at='10@33.8'),
+            dict(h=3.5, label='You', at='sade@36', you=True), dict(h=4, label='', at='4@36.7', you=True), dict(h=5, label='', at='5@37.2', you=True)],
+      range=dict(**{'from': 5, 'to': 8}, label='2–3 hours ahead', at='hours@40'),
+      subs=[dict(text='Think how much you can *utilize* them.', at='utilize@44')]),
+ dict(id='d6', type='chips', side='R', t0=47.4, t1=70.5, kicker='My suggestion', title='So many *sessions*',
+      chips=[dict(text='London', at='london@52'), dict(text='New York', at='york@53.5'), dict(text='Asian', at='asian@55'), dict(text='Sydney', at='sydney@56.5'), dict(text='Tokyo', at='tokyo@57.8'),
+             dict(text='Which one suits you?', at='suit@63.5', sec=True), dict(text='Forward testing tells you', at='forward@68', hot=True)]),
+ dict(id='d7', type='list', side='L', t0=70.6, t1=78.2, kicker='Not confident yet?', title='Do *this*',
+      rows=[dict(text='Trade a demo account', at='demo@75.5', ic='1'), dict(text='…but *forward test* it', at='forward@77', ic='2', mark='ok')]),
+]
+
+SB[6] = [
+ dict(id='e1', type='title', side='L', t0=0.0, t1=6.2, kicker='Backtesting', small=True,
+      lines=[dict(text='1 – 2 years', at=1.0), dict(text='*is enough*', at='hoge@4.6')]),
+ dict(id='e2', type='list', side='S', t0=6.3, t1=18.4, kicker='What I’ve seen', title='Most traders get *stuck*',
+      rows=[dict(text='2, 3, 5… *10 years* of backtesting', at='10@8.2'), dict(text='Then scared of a *0.01* lot', at='0.01@10.5', mark='x')],
+      verdict=dict(text='Real work = forward testing', at='forward@16.8')),
+ dict(id='e3', type='broker', side='F', t0=18.5, t1=41.0, kicker='My lot volume · proof',
+      title=dict(text='Just *one* broker', at='screenshot@24.5'), meta=dict(text='Last 1.5–2 years · I use <b>3 brokers</b>', at='broker@31.5'),
+      foot=dict(text='How I open 2–3 lots on $1,000', at='1000@38.3'), panel_at='screenshot@24.7',
+      volumes=[dict(value=15526.54, at='number@27'), dict(value=10676.91, at='maare@29.5')]),
+ dict(id='e4', type='list', side='L', t0=41.1, t1=50.0, kicker='The real reason', title='It’s not the setup',
+      rows=[dict(text='A+ setup', at='setup@43', mark='x', strike='important@44', strike_w=120), dict(text='Your *lot size*', at='lot@45.5', mark='ok')]),
+ dict(id='e5', type='flow', side='L', t0=50.1, t1=56.5, kicker='The formula', title='Confidence is *built*',
+      steps=[dict(label='Trade more', at='trade@51.5'), dict(label='Give more input', at='input@53.3'), dict(label='Gain confidence', at='confident@55', icon='star')]),
+ dict(id='e6', type='list', side='R', t0=56.6, t1=68.4, kicker='But not like this', title='Random trades *don’t work*',
+      rows=[dict(text='Random trades', at='idhar@59.9', mark='x'), dict(text='Profit once or twice', at='profit@62.5'), dict(text='…then loss', at='loss@65', mark='x')]),
+ dict(id='e7', type='grid', side='F', t0=68.5, t1=77.7, kicker='Until then',
+      a=dict(text='Until you’ve traded', at='trading@71.5'), b=dict(text='hundreds & *thousands* of times', at='thousands@74'),
+      fill_at='hundreds@73.5', hero_at='trade@76.8'),
+]
+
+SB[7] = [
+ dict(id='f1', type='quote', side='L', t0=0.0, t1=10.9, kicker='Sounds easy',
+      lines=[dict(text='“I want only', at='want@2.5'), dict(text='*one trade*”', at='one@4.2')],
+      sub=dict(text='But how much <b>hard work</b> is behind it?', at='mehnat@8.5')),
+ dict(id='f2', type='pill', side='N', t0=11.0, t1=15.4, text='Bas karte jao — keep going', at='karte@12.5'),
+ dict(id='f3', type='big', side='F', t0=15.5, t1=25.7, kicker='Remember', md=True,
+      lines=[dict(text='We have', at='have@16.6'), dict(text='*only one life*', at='life@17.3', hit=True)],
+      chips=[dict(text='For us', at='us@22.8'), dict(text='Our family', at='family@23.6'), dict(text='Our friends', at='friends@24.3'), dict(text='Everyone', at='everyone@25')]),
+ dict(id='f4', type='title', side='L', t0=25.8, t1=33.4, kicker='So',
+      lines=[dict(text='*Work hard*', at='work@26')], sub=dict(text='Worst case? A year or two “wasted”.', at='waste@31')),
+ dict(id='f5', type='list', side='R', t0=33.5, t1=46.0, kicker='Use your time', title='Make it *count*',
+      rows=[dict(text='You can try other things', at='try@33.8'), dict(text='Work a little harder', at='mehnati@39'), dict(text='Utilize your time properly', at='utilize@43', mark='ok')]),
+ dict(id='f6', type='pill', side='N', t0=46.1, t1=48.95, text='No one tells you this — I am', at='koi@46.5'),
+]
+
+SB[8] = [
+ dict(id='g1', type='quote', side='L', t0=0.0, t1=9.4, kicker='One life',
+      lines=[dict(text='Live it so that', at='jiho@1.5'), dict(text='on your *last day*…', at='dead@5')]),
+ dict(id='g2', type='big', side='F', t0=9.5, t1=20.8, kicker='The last 1–5 minutes', md=True,
+      lines=[dict(text='What did I do', at='humne@18'), dict(text='in *this life*?', at='zindagi@20')],
+      subs=[dict(text='That’s the thought that comes.', at='thoughts@16')]),
+ dict(id='g3', type='list', side='L', t0=20.9, t1=29.9, kicker='In that last minute', title='Let it be *this*',
+      rows=[dict(text='What you have done *good*', at='good@25.3', mark='ok'), dict(text='What you have *achieved*', at='achieved@26.8', mark='ok')],
+      verdict=dict(text='Fight for your family', at='family@29.3')),
+]
+
+SB[9] = [
+ dict(id='h1', type='title', side='L', t0=0.1, t1=9.0, kicker='Your why', small=True,
+      lines=[dict(text='The happiness on', at='happiness@0.6'), dict(text='*mom & dad’s* face', at='mom@2'), dict(text='when they *smile*', at='smile@4.4')],
+      sub=dict(text='<b>Fight</b> for that.', at='fight@6.2')),
+ dict(id='h2', type='pill', side='N', t0=9.1, t1=11.0, text='Fight for yourself', at='fight@9.5'),
+ dict(id='h3', type='chips', side='R', t0=11.1, t1=35.8, kicker='Look around', title='This world is *beautiful*',
+      chips=[dict(text='Mountains', at='mountains@22'), dict(text='Lakes', at='lakes@23.6'), dict(text='Views', at='view@25'), dict(text='Cloudy nature', at='cloudy@26.2'), dict(text='Foggy nature', at='foggy@27.5'),
+             dict(text='Made to be seen', at='dekhne@34.5', hot=True)]),
+ dict(id='h4', type='quote', side='L', t0=35.9, t1=48.6, kicker='Our job as humans',
+      lines=[dict(text='See this', at='dekhna@38'), dict(text='*world*', at='duniya@45.5')], sub=dict(text='It’s truly <b>beautiful</b>.', at='beautiful@47.5')),
+ dict(id='h5', type='big', side='F', t0=48.7, t1=63.9, kicker='Always and forever', md=True,
+      lines=[dict(text='*Be happy*', at='happy@51', hit=True)], subs=[dict(text='Try to be happy.', at='try@55.5'), dict(text='You can do *anything* if you want.', at='anything@62')]),
+ dict(id='h6', type='big', side='F', t0=64.0, t1='END', kicker='Puri himmat', md=True,
+      lines=[dict(text='Your *one trade*', at='trade@66.5', hit=True), dict(text='will come soon.', at='jaldi@67.3')]),
+ dict(id='h7', type='end', side='F', t0='END', t1='END+', tag='One trade away'),
+]

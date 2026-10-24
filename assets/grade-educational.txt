@@ -1,0 +1,1 @@
+colorchannelmixer=rr=1.0:gg=1.064:bb=1.19,curves=master='0/0 0.08/0.075 0.25/0.325 0.45/0.585 0.65/0.80 0.85/0.94 1/1',vibrance=intensity=0.18,eq=saturation=1.03,unsharp=5:5:0.45:5:5:0

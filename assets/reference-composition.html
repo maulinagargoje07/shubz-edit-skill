@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face { font-family: "Plus Jakarta Sans"; src: url("fonts/PlusJakartaSans-var-latin.woff2") format("woff2"); font-weight: 200 800; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("fonts/Inter-400-latin.woff2") format("woff2"); font-weight: 400; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("fonts/Inter-700-latin.woff2") format("woff2"); font-weight: 700; font-display: block; }
+
+      /* $hubzTrader brand tokens — extracted from shubztrader.com CSS */
+      :root {
+        --bg: #050505; --gold: #d4af37; --gold-hi: #f3d675; --gold-mid: #c79a2b; --gold-lo: #8a681f;
+        --cream: #f5f1e8; --fg: #f7f7f5; --muted: #9a9a9a; --line: rgba(212, 175, 55, 0.22);
+        --green: #10b981; --red: #ef4444;
+        --gold-grad: linear-gradient(135deg, #8a681f, #d4af37 30%, #f3d675 50%, #c79a2b 70%, #8a681f);
+        --shadow: 0 30px 80px rgba(0, 0, 0, 0.65), 0 2px 6px rgba(0, 0, 0, 0.5);
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: "Inter", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+      #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+      .video-wrapper { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+      #zoom { position: absolute; inset: 0; transform-origin: 50% 32%; }
+      #zoom video { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .vignette { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.45) 100%); }
+      .card-host { position: absolute; pointer-events: none; perspective: 1600px; }
+      .p3d { transform-style: preserve-3d; }
+
+      .h { font-family: "Plus Jakarta Sans", "Inter", sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; }
+      .gold-text { background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .ui-card { position: absolute; color: var(--fg); background: linear-gradient(180deg, #16171b, #0a0a0a); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+      .ui-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, rgba(212, 175, 55, 0), #d4af37 35%, #f3d675 72%, rgba(255, 247, 220, 0)); }
+      .kicker { display: inline-flex; align-items: center; gap: 10px; font-family: "Plus Jakarta Sans", sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+      .kicker .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.8); }
+      .muted { color: var(--muted); }
+      .w { display: inline-block; }
+      .gridbg { position: absolute; inset: 0; background: radial-gradient(125% 95% at 50% 44%, #0e0d0a 0, #070706 42%, #000 100%); }
+      .gridbg::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 0), linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 0); background-size: 64px 64px; }
+      .shine { position: absolute; inset: 0; background: linear-gradient(108deg, transparent 41%, rgba(255, 236, 184, 0.12) 46%, rgba(255, 249, 224, 0.28) 50%, rgba(255, 236, 184, 0.12) 54%, transparent 59%); transform: translateX(-120%); }
+
+      /* extruded 3D gold numeral */
+      .num3d { position: relative; font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; line-height: 0.8; }
+      .num3d .back { position: absolute; left: 0; top: 0; color: #4a3810; text-shadow: 1px 1px 0 #5a4314, 2px 2px 0 #5a4314, 3px 3px 0 #4f3b11, 4px 4px 0 #4f3b11, 5px 5px 0 #45330f, 6px 6px 0 #45330f, 7px 7px 0 #3b2c0d, 8px 8px 0 #3b2c0d, 9px 9px 0 #30240a, 10px 10px 0 #30240a, 14px 18px 30px rgba(0, 0, 0, 0.7); }
+      .num3d .front { position: relative; }
+
+      /* brand chip */
+      #brand .pill { position: absolute; left: 48px; top: 40px; display: inline-flex; align-items: center; gap: 12px; height: 54px; padding: 0 22px 0 8px; background: rgba(5, 5, 5, 0.82); border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow); }
+      #brand img { width: 40px; height: 40px; border-radius: 50%; }
+      #brand .nm { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; font-size: 18px; }
+      #brand .sep { width: 1px; height: 20px; background: var(--line); }
+      #brand .ep { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+
+      /* c1 hook */
+      #c1 .ui-card { left: 48px; top: 250px; width: 650px; height: 380px; padding: 40px 36px; display: flex; gap: 22px; align-items: center; transform-origin: left center; }
+      #c1 .num3d { font-size: 250px; width: 150px; height: 205px; transform-origin: 50% 50%; }
+      #c1 h1 { margin: 16px 0 0; font-size: 60px; line-height: 0.98; }
+      #c1 .sub { margin-top: 22px; font-size: 23px; line-height: 1.25; position: relative; display: inline-block; color: var(--cream); }
+      #c1 .sub b { color: var(--gold-hi); }
+      #c1 .ul { position: absolute; left: 0; bottom: -10px; height: 4px; width: 0; border-radius: 2px; background: var(--gold-grad); }
+
+      /* c2 time bars (tilted 3D card) */
+      #c2 .ui-card { left: 1260px; top: 180px; width: 600px; height: 480px; padding: 40px 44px; transform-origin: right center; }
+      #c2 h2 { margin: 16px 0 30px; font-size: 46px; line-height: 1.05; }
+      #c2 .row { margin-bottom: 26px; }
+      #c2 .row .top { display: flex; justify-content: space-between; align-items: baseline; font-family: "Plus Jakarta Sans", sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+      #c2 .row .top span:last-child { font-family: "Inter", sans-serif; font-size: 16px; font-weight: 400; color: var(--muted); }
+      #c2 .track { height: 14px; border-radius: 7px; background: #1b1c24; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6); }
+      #c2 .bar { height: 100%; width: 0; border-radius: 7px; background: var(--gold-grad); box-shadow: 0 0 18px rgba(212, 175, 55, 0.35); }
+      #c2 .bar.b3 { background: linear-gradient(90deg, #8a681f, #c79a2b); }
+
+      /* c3/c4 */
+      #c34 .ui-card { left: 48px; top: 270px; width: 670px; height: 460px; transform-origin: 50% 0%; }
+      #c34 .panel { position: absolute; left: 44px; top: 44px; right: 44px; }
+      #c34 h2 { margin: 20px 0 0; font-size: 50px; line-height: 1.04; }
+      #c34 .hl { position: relative; display: inline-block; }
+      #c34 .hl .bg { position: absolute; left: -8px; right: -8px; top: 6%; bottom: 2%; background: rgba(212, 175, 55, 0.16); border-left: 3px solid var(--gold); border-radius: 6px; z-index: 0; transform-origin: left center; transform: scaleX(0); }
+      #c34 .meta { margin-top: 30px; display: flex; }
+      #c34 .chip { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px; background: rgba(212, 175, 55, 0.08); border: 1px solid var(--line); font-size: 21px; font-weight: 700; color: var(--cream); }
+      #c34 .chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--gold); display: inline-block; }
+      #c34 .flow { position: relative; margin-top: 46px; height: 210px; }
+      #c34 .line { position: absolute; left: 60px; top: 58px; height: 3px; width: 0; background: var(--gold-grad); border-radius: 2px; }
+      #c34 .line-bg { position: absolute; left: 60px; right: 60px; top: 58px; height: 3px; background: #24252c; border-radius: 2px; }
+      #c34 .step { position: absolute; top: 0; width: 160px; text-align: center; }
+      #c34 .step .n { margin: 0 auto; width: 120px; height: 120px; border-radius: 22px; background: #0b0b0b; border: 1px solid #2a2b31; display: grid; place-items: center; color: #5d5f68; }
+      #c34 .step .n svg { width: 46px; height: 46px; }
+      #c34 .step .lbl { margin-top: 18px; font-family: "Plus Jakarta Sans", sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cream); }
+      #c34 .step.on .n { border-color: transparent; background: var(--gold-grad); color: #050505; box-shadow: 0 14px 36px rgba(212, 175, 55, 0.35); }
+
+      /* c5 */
+      #c5 .pill { position: absolute; left: 50%; top: 780px; margin-left: -150px; width: 300px; display: flex; justify-content: center; align-items: center; gap: 16px; padding: 16px 18px 16px 30px; background: var(--gold-grad); color: #050505; border-radius: 999px; box-shadow: var(--shadow); font-family: "Plus Jakarta Sans", sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+      #c5 .arrow { width: 40px; height: 40px; border-radius: 50%; background: #050505; display: grid; place-items: center; }
+
+      /* c6 */
+      #c6 .ui-card { left: 48px; top: 330px; width: 660px; height: 290px; padding: 36px 42px; transform-origin: left center; }
+      #c6 .q { margin-top: 16px; font-size: 52px; line-height: 1.02; }
+      #c6 .r { margin-top: 20px; font-size: 23px; color: var(--muted); position: relative; display: inline-block; }
+      #c6 .r b { color: var(--gold-hi); }
+      #c6 .r .ul { position: absolute; left: 0; bottom: -8px; height: 3px; width: 0; background: var(--gold-grad); border-radius: 2px; }
+
+      /* c7 full-screen 3D trade log */
+      #c7 .copy { position: absolute; left: 130px; top: 250px; width: 640px; }
+      #c7 .copy .a { margin-top: 22px; font-size: 38px; font-weight: 700; color: var(--muted); line-height: 1.15; }
+      #c7 .copy .b { margin-top: 18px; font-size: 90px; line-height: 0.96; color: var(--fg); }
+      #c7 .copy .b .gold-text { display: block; }
+      #c7 .stage3d { position: absolute; left: 820px; top: 90px; width: 1000px; height: 800px; perspective: 1800px; }
+      #c7 .panel { position: absolute; left: 40px; top: 40px; width: 920px; height: 720px; background: linear-gradient(180deg, #121318, #0a0a0a); border-radius: 20px; box-shadow: 0 60px 120px rgba(0, 0, 0, 0.8); border: 1px solid var(--line); padding: 36px 40px; transform-style: preserve-3d; transform-origin: 50% 60%; }
+      #c7 .panel .hd { display: flex; justify-content: space-between; align-items: center; font-family: "Plus Jakarta Sans", sans-serif; font-size: 15px; font-weight: 700; color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase; }
+      #c7 .legend { display: flex; gap: 22px; text-transform: none; letter-spacing: 0; font-family: "Inter", sans-serif; font-weight: 400; font-size: 17px; color: var(--muted); }
+      #c7 .legend span { display: inline-flex; align-items: center; gap: 8px; }
+      #c7 .legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+      #c7 .grid { margin-top: 26px; display: grid; grid-template-columns: repeat(30, 22px); gap: 6px; transform-style: preserve-3d; }
+      #c7 .grid i { width: 22px; height: 22px; border-radius: 5px; background: #2c2d35; border: 1px solid rgba(212, 175, 55, 0.12); display: block; }
+      #c7 .grid i.hero { background: var(--gold-grad); border: 0; box-shadow: 0 0 0 5px rgba(212, 175, 55, 0.22), 0 0 40px rgba(243, 214, 117, 0.75); }
+
+      /* c8 split */
+      #c8 .bgl { position: absolute; left: 0; top: 0; width: 960px; height: 1080px; overflow: hidden; }
+      #c8 .ui-card { left: 80px; top: 160px; width: 800px; height: 680px; padding: 46px 52px; perspective: 1200px; }
+      #c8 h2 { margin: 18px 0 32px; font-size: 50px; line-height: 1.02; }
+      #c8 .row { position: relative; display: flex; align-items: center; gap: 22px; padding: 20px 24px; border-radius: 14px; background: #0b0b0b; border: 1px solid #23242a; margin-bottom: 14px; font-size: 28px; font-weight: 700; color: var(--cream); transform-origin: 50% 0%; }
+      #c8 .row .ic { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: rgba(212, 175, 55, 0.12); color: var(--gold-hi); font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; font-size: 20px; flex: none; }
+      #c8 .row .x { margin-left: auto; width: 42px; height: 42px; border-radius: 50%; background: rgba(239, 68, 68, 0.14); color: var(--red); display: grid; place-items: center; font-size: 22px; font-weight: 700; }
+      #c8 .row .strike { position: absolute; left: 92px; top: 50%; height: 3px; width: 0; background: var(--red); border-radius: 2px; }
+      #c8 .verdict { margin-top: 22px; display: inline-flex; align-items: center; padding: 16px 28px; border-radius: 999px; background: var(--gold-grad); color: #050505; font-family: "Plus Jakarta Sans", sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+
+      /* c9 */
+      #c9 .ui-card { left: 48px; top: 340px; width: 660px; height: 300px; padding: 38px 42px; transform-origin: left center; }
+      #c9 .t { margin-top: 14px; font-size: 72px; line-height: 0.98; }
+      #c9 .s { margin-top: 18px; font-size: 30px; color: var(--cream); }
+      #c9 .chip { position: absolute; right: 40px; top: 36px; padding: 10px 18px; border-radius: 999px; background: rgba(212, 175, 55, 0.12); border: 1px solid var(--gold); color: var(--gold-hi); font-size: 18px; font-weight: 700; }
+
+      /* c10 full-screen 3D dashboard */
+      #c10 .stage3d { position: absolute; inset: 0; perspective: 1800px; }
+      #c10 .dash { position: absolute; left: 160px; top: 70px; width: 1600px; height: 790px; background: linear-gradient(180deg, #121318, #0a0a0a); border-radius: 20px; box-shadow: 0 60px 120px rgba(0, 0, 0, 0.8); border: 1px solid var(--line); overflow: hidden; transform-origin: 50% 100%; }
+      #c10 .bar { height: 66px; border-bottom: 1px solid #1f2026; display: flex; align-items: center; padding: 0 32px; gap: 10px; }
+      #c10 .bar .d { width: 11px; height: 11px; border-radius: 50%; background: #2a2b31; }
+      #c10 .bar .ttl { margin-left: 16px; font-family: "Plus Jakarta Sans", sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+      #c10 .bar .tabs { margin-left: auto; display: flex; gap: 8px; }
+      #c10 .bar .tabs span { padding: 7px 14px; border-radius: 8px; font-size: 15px; font-weight: 700; color: var(--muted); }
+      #c10 .bar .tabs span.on { background: rgba(212, 175, 55, 0.12); color: var(--gold-hi); }
+      #c10 .head { position: absolute; left: 56px; top: 98px; }
+      #c10 .head h2 { margin: 12px 0 0; font-size: 50px; color: var(--fg); }
+      #c10 svg.chart { position: absolute; left: 60px; top: 250px; width: 1480px; height: 520px; }
+      #c10 .tag { position: absolute; padding: 10px 18px; border-radius: 10px; font-family: "Plus Jakarta Sans", sans-serif; font-size: 18px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+      #c10 .tag.up { background: var(--gold-grad); color: #050505; }
+      #c10 .tag.down { background: rgba(239, 68, 68, 0.12); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.45); }
+      #c10 .foot { position: absolute; left: 56px; top: 198px; font-size: 24px; font-weight: 700; color: var(--muted); }
+
+      /* captions v2 — karaoke reveal + gold active-word box */
+      #captions .chunk { position: absolute; left: 140px; right: 140px; top: 902px; text-align: center; visibility: hidden; opacity: 0; }
+      #captions .cw {
+        display: inline-block; margin: 0 4px; padding: 4px 12px 6px; border-radius: 10px;
+        font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; font-size: 54px; letter-spacing: -0.01em; text-transform: uppercase; line-height: 1.1;
+        color: rgba(247, 247, 245, 0.42);
+        text-shadow: 0 2px 0 rgba(0, 0, 0, 0.9), 0 0 16px rgba(0, 0, 0, 0.85), 0 6px 24px rgba(0, 0, 0, 0.6);
+      }
+      #captions .cw.on { background: var(--gold-grad); color: #050505; text-shadow: none; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 24px rgba(212, 175, 55, 0.35); }
+      #captions .cw.done { color: #f7f7f5; }
+      #captions .cw.done.key { color: #f3d675; }
+    </style>
+  </head>
+  <body>
+    <div id="stage" data-composition-id="shubz-c9010" data-start="0" data-duration="62.6" data-fps="30" data-width="1920" data-height="1080">
+      <div class="video-wrapper" id="video-wrap">
+        <div id="zoom"><video id="bg-video" src="input-video.mp4" playsinline data-has-audio="true" data-start="0" data-duration="62.6" data-track-index="1"></video></div>
+        <div class="vignette"></div>
+      </div>
+
+      <!-- c1 · 0.5–6.35 · "You are just one trade ahead of getting a successful trader guys" -->
+      <div class="card-host clip" id="c1" data-start="0.5" data-duration="5.85" data-track-index="2" style="left:0;top:0;width:1920px;height:1080px;">
+        <div class="ui-card p3d">
+          <div class="num3d" id="c1-num"><span class="back">1</span><span class="front gold-text">1</span></div>
+          <div>
+            <div class="kicker" id="c1-k"><span class="dot"></span>You are just</div>
+            <h1 class="h"><span class="w gold-text" id="c1-w1">One</span> <span class="w" id="c1-w2">trade</span><br /><span class="w" id="c1-w3">ahead</span></h1>
+            <div class="sub" id="c1-sub"><span class="muted">of becoming a</span> <b>successful trader</b><span class="ul" id="c1-ul"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- c2 · 6.4–12.9 · "2 saal … 3 saal … 6 mahine bhi lag sakte hain" -->
+      <div class="card-host clip" id="c2" data-start="6.4" data-duration="6.5" data-track-index="3" style="left:0;top:0;width:1920px;height:1080px;">
+        <div class="ui-card">
+          <div class="kicker"><span class="dot"></span>Iske liye</div>
+          <h2 class="h">It can <span class="gold-text">take</span></h2>
+          <div class="row" id="c2-r1"><div class="top"><span>2 years</span><span>24 months</span></div><div class="track"><div class="bar" id="c2-b1"></div></div></div>
+          <div class="row" id="c2-r2"><div class="top"><span>3 years</span><span>36 months</span></div><div class="track"><div class="bar b3" id="c2-b2"></div></div></div>
+          <div class="row" id="c2-r3"><div class="top"><span>or even 6 months</span><span>6 months</span></div><div class="track"><div class="bar" id="c2-b3"></div></div></div>
+        </div>
+      </div>
+
+      <!-- c3+c4 · 12.9–26.0 · preparation → entry / exit / execution -->
+      <div class="card-host clip" id="c34" data-start="12.9" data-duration="13.1" data-track-index="2" style="left:0;top:0;width:1920px;height:1080px;">
+        <div class="ui-card">
+          <div class="panel" id="c3">
+            <div class="kicker" id="c3-k"><span class="dot"></span>In this video</div>
+            <h2 class="h" id="c3-h">What kind of<br /><span class="hl"><span class="bg" id="c3-hl"></span><span class="gold-text" style="position:relative;z-index:1">preparation</span></span><br />you need</h2>
+            <div class="meta" id="c3-m"><span class="chip"><i></i>To land that one trade</span></div>
+          </div>
+          <div class="panel p3d" id="c4" style="opacity:0">
+            <div class="kicker"><span class="dot"></span>One trade, done properly</div>
+            <div class="flow p3d" style="perspective:900px">
+              <div class="line-bg"></div>
+              <div class="line" id="c4-line"></div>
+              <div class="step" id="c4-s1" style="left:-20px"><div class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></div><div class="lbl">Entry</div></div>
+              <div class="step" id="c4-s2" style="left:200px"><div class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H5v16h5M14 8l4 4-4 4M18 12H9" /></svg></div><div class="lbl">Exit</div></div>
+              <div class="step" id="c4-s3" style="left:420px"><div class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7" /></svg></div><div class="lbl">Execution</div></div>
+            </div>
+            <div class="muted" id="c4-note" style="font-size:23px;margin-top:2px">Proper entry, exit and proper execution</div>
+          </div>
+          <div class="shine" id="c34-shine"></div>
+        </div>
+      </div>
+
+      <!-- c5 · 26.3–28.6 · "So, let's start this video guys" -->
+      <div class="card-host clip" id="c5" data-start="26.3" data-duration="2.3" data-track-index="2" style="left:0;top:0;width:1920px;height:1080px;">
+        <div class="pill" id="c5-p">Let's start <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f3d675" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></div>
+      </div>
+
+      <!-- c6 · 30.5–36.9 · "aapko bas ek trade chahiye … bahut important reason hai" -->
+      <div class="card-host clip" id="c6" data-start="30.5" data-duration="6.4" data-track-index="2" style="left:0;top:0;width:1920px;height:1080px;">
+        <div class="ui-card">
+          <div class="kicker"><span class="dot"></span>Remember</div>
+          <div class="q h"><span class="w" id="c6-w1">You</span> <span class="w" id="c6-w2">need</span> <span class="w" id="c6-w3">just</span><br /><span class="w gold-text" id="c6-w4">one trade.</span></div>
+          <div class="r" id="c6-r">And there's a very <b>important reason</b> behind it.<span class="ul" id="c6-ul"></span></div>
+        </div>
+      </div>
+
+      <!-- c7 · 36.95–43.45 · full screen · "wo ek trade tak pahunchne … thousands of time trade karna padega" -->
+      <div class="card-host clip" id="c7" data-start="36.95" data-duration="6.5" data-track-index="4" style="left:0;top:0;width:1920px;height:1080px;">
+        <div class="gridbg"></div>
+        <div class="copy">
+          <div class="kicker" id="c7-k"><span class="dot"></span>Behind that one trade</div>
+          <div class="a" id="c7-a">To reach that one trade,<br />you'll have to trade</div>
+          <div class="b h" id="c7-b">at least<span class="gold-text">thousands</span>of times.</div>
+        </div>
+        <div class="stage3d">
+          <div class="panel" id="c7-p">
+            <div class="hd"><span>Trade log</span><span class="legend"><span><i style="background:var(--gold)"></i>The one trade</span><span><i style="background:#2c2d35"></i>Practice trades</span></span></div>
+            <div class="grid" id="c7-grid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- c8 · 43.45–51.6 · split · "koi bhi aisa trader nahi hai … Nahi, aisa nahi hota" -->
+      <div class="card-host clip" id="c8" data-start="43.45" data-duration="8.15" data-track-index="2" style="left:0;top:0;width:1920px;height:1080px;">
+        <div class="bgl"><div class="gridbg"></div></div>
+        <div class="ui-card">
+          <div class="kicker"><span class="dot"></span>Because I will tell you</div>
+          <h2 class="h" id="c8-h">No trader <span class="gold-text">goes from</span></h2>
+          <div class="row" id="c8-r1"><span class="ic">1</span>Started trading today</div>
+          <div class="row" id="c8-r2"><span class="ic">2</span>Profitable from tomorrow<span class="x" id="c8-x2">✕</span><span class="strike" id="c8-s2"></span></div>
+          <div class="row" id="c8-r3"><span class="ic">3</span>Profitable in one month<span class="x" id="c8-x3">✕</span><span class="strike" id="c8-s3"></span></div>
+          <div class="verdict" id="c8-v">It doesn't work like that</div>
+        </div>
+      </div>
+
+      <!-- c9 · 51.7–58.2 · "beginner's luck … sabke saath … ek mahine ke andar" -->
+      <div class="card-host clip" id="c9" data-start="51.7" data-duration="6.5" data-track-index="2" style="left:0;top:0;width:1920px;height:1080px;">
+        <div class="ui-card">
+          <div class="kicker"><span class="dot"></span>Dekho</div>
+          <div class="t h"><span class="w gold-text" id="c9-w1">Beginner's</span> <span class="w gold-text" id="c9-w2">luck</span></div>
+          <div class="s" id="c9-s">happens to everyone.</div>
+          <div class="chip" id="c9-c">Within the first month</div>
+          <div class="shine" id="c9-shine"></div>
+        </div>
+      </div>
+
+      <!-- c10 · 58.2–62.6 · full screen · "you are getting successful … downfall" -->
+      <div class="card-host clip" id="c10" data-start="58.2" data-duration="4.4" data-track-index="4" style="left:0;top:0;width:1920px;height:1080px;">
+        <div class="gridbg"></div>
+        <div class="stage3d">
+          <div class="dash" id="c10-d">
+            <div class="bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="ttl">Trading journey</span><span class="tabs"><span class="on">Month 1</span><span>After</span></span></div>
+            <div class="head"><div class="kicker"><span class="dot"></span>The pattern</div><h2 class="h" id="c10-h">A little success, <span class="gold-text">then the downfall</span></h2></div>
+            <div class="foot" id="c10-f">…and it always comes.</div>
+            <svg class="chart" viewBox="0 0 1480 520" fill="none">
+              <defs>
+                <linearGradient id="gUp" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a681f" /><stop offset="0.6" stop-color="#d4af37" /><stop offset="1" stop-color="#f3d675" /></linearGradient>
+                <linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4af37" stop-opacity="0.22" /><stop offset="1" stop-color="#d4af37" stop-opacity="0" /></linearGradient>
+              </defs>
+              <g stroke="#1c1d23" stroke-width="2"><line x1="0" y1="80" x2="1480" y2="80" /><line x1="0" y1="200" x2="1480" y2="200" /><line x1="0" y1="320" x2="1480" y2="320" /><line x1="0" y1="440" x2="1480" y2="440" /></g>
+              <path id="c10-area" d="M0 400 C 120 390, 200 360, 300 330 S 520 250, 640 200 S 820 120, 900 110 C 960 120, 1000 180, 1060 260 S 1200 420, 1280 450 S 1420 470, 1470 480 L 1470 520 L 0 520 Z" fill="url(#gArea)" opacity="0" />
+              <path id="c10-up" d="M0 400 C 120 390, 200 360, 300 330 S 520 250, 640 200 S 820 120, 900 110" stroke="url(#gUp)" stroke-width="7" stroke-linecap="round" />
+              <path id="c10-down" d="M900 110 C 960 120, 1000 180, 1060 260 S 1200 420, 1280 450 S 1420 470, 1470 480" stroke="#ef4444" stroke-width="7" stroke-linecap="round" />
+              <circle id="c10-peak" cx="900" cy="110" r="12" fill="#050505" stroke="#f3d675" stroke-width="6" opacity="0" />
+            </svg>
+            <div class="tag up" id="c10-t1" style="left:640px;top:280px">Getting successful</div>
+            <div class="tag down" id="c10-t2" style="left:1250px;top:560px">Downfall</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- brand chip -->
+      <div class="card-host clip" id="brand" data-start="0" data-duration="62.6" data-track-index="5" style="left:0;top:0;width:1920px;height:140px;">
+        <div class="pill"><img src="img/emblem.png" alt="" /><span class="nm gold-text">$hubzTrader</span><span class="sep"></span><span class="ep">One Trade Away</span></div>
+      </div>
+
+      <!-- burned-in captions -->
+      <div class="card-host clip" id="captions" data-start="0" data-duration="62.6" data-track-index="6" style="left:0;top:0;width:1920px;height:1080px;"></div>
+
+      <!-- audio: music bed (Mixkit "Deep Urban", pre-levelled to ~-29 LUFS) + SFX (bundled Pixabay library) -->
+      <audio id="bgm" src="audio/bgm.m4a" data-start="0" data-duration="62.6" data-volume="1" data-track-index="7"></audio>
+__SFX__
+      <script src="vendor/gsap.min.js"></script>
+      <script>
+        (function () {
+          const FPS = 30, DUR = 62.6;
+          const q = (t) => Math.round(t * FPS) / FPS;
+          const tl = gsap.timeline({ paused: true });
+          const E = "power3.out", EI = "power2.inOut";
+          function exitCard(sel, t) { tl.to(sel, { opacity: 0, y: -10, duration: 0.35, ease: "power2.in" }, q(t - 0.35)); }
+          function rise(sel, t, d, extra) { tl.fromTo(sel, Object.assign({ opacity: 0, y: 18 }, extra || {}), { opacity: 1, y: 0, duration: d || 0.45, ease: E }, q(t)); }
+          function shine(sel, t) { tl.fromTo(sel, { xPercent: -120 }, { xPercent: 120, duration: 1.1, ease: "power2.inOut" }, q(t)); }
+          // 3D swing-in: card rotates in around its own edge
+          function swingIn(sel, t, ry, d) { tl.fromTo(sel, { opacity: 0, rotationY: ry, x: ry > 0 ? 40 : -40, z: -120 }, { opacity: 1, rotationY: 0, x: 0, z: 0, duration: d || 0.7, ease: "power3.out" }, q(t)); }
+
+          // ── Zoom cuts: hard punch-ins on jump cuts + smooth push-ins on emphasis ──
+          const Z = "#zoom";
+          gsap.set(Z, { scale: 1 });
+          tl.to(Z, { scale: 1.07, duration: 2.7, ease: "none" }, 0.1);
+          [[2.87, 1.22], [6.46, 1.0], [11.03, 1.15], [15.02, 1.0], [18.49, 1.18], [21.04, 1.0], [25.99, 1.28], [28.65, 1.0], [33.53, 1.12], [34.36, 1.0], [43.4, 1.0], [50.64, 1.0], [54.41, 1.18], [57.6, 1.0]].forEach(([t, s]) => tl.set(Z, { scale: s }, q(t)));
+          tl.to(Z, { scale: 1.1, duration: 1.3, ease: EI }, q(35.5));
+          tl.fromTo(Z, { scale: 1.0 }, { scale: 1.06, duration: 2.9, ease: "none" }, q(51.6));
+
+          // ── Captions v2 ──
+          const WORDS = __WORDS__;
+          const KEY = /^(trade|successful|trader|preparation|entry|exit|execution|thousands|profitable|downfall|luck|beginner's|important|reason|saal|mahine|proper)$/i;
+          const host = document.getElementById("captions");
+          const chunks = []; let cur = [];
+          WORDS.forEach((w) => {
+            const prev = cur[cur.length - 1];
+            const len = cur.reduce((a, x) => a + x[0].length + 1, 0) + w[0].length;
+            if (cur.length && (cur.length >= 4 || len > 22 || (prev && w[1] - prev[2] > 0.45))) { chunks.push(cur); cur = []; }
+            cur.push(w);
+            if (/[.,?!]$/.test(w[0]) && cur.length >= 2) { chunks.push(cur); cur = []; }
+          });
+          if (cur.length) chunks.push(cur);
+          chunks.forEach((c, ci) => {
+            const el = document.createElement("div"); el.className = "chunk";
+            c.forEach((w) => { const s = document.createElement("span"); const txt = w[0].replace(/[.,]$/, ""); s.className = "cw" + (KEY.test(txt) ? " key" : ""); s.textContent = txt; el.appendChild(s); });
+            host.appendChild(el);
+            const start = c[0][1], next = chunks[ci + 1];
+            const end = Math.min(next ? next[0][1] : DUR, c[c.length - 1][2] + 0.6, DUR);
+            tl.set(el, { visibility: "visible" }, q(start));
+            tl.fromTo(el, { opacity: 0, y: 14, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "power2.out" }, q(start));
+            tl.set(el, { visibility: "hidden", opacity: 0 }, q(end));
+            const spans = el.querySelectorAll(".cw");
+            c.forEach((w, wi) => {
+              const base = spans[wi].className.replace(/ ?(on|done)/g, "");
+              tl.set(spans[wi], { className: base + " on" }, q(w[1]));
+              tl.fromTo(spans[wi], { scale: 1.12 }, { scale: 1, duration: 0.18, ease: "power2.out" }, q(w[1]));
+              const off = wi < c.length - 1 ? c[wi + 1][1] : end - 0.01;
+              tl.set(spans[wi], { className: base + " done" }, q(off));
+            });
+          });
+
+          // brand chip
+          tl.fromTo("#brand .pill", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.6, ease: E }, 0.3);
+          [[36.95, 0], [43.45, 1], [58.2, 0]].forEach(([t, o]) => tl.to("#brand", { opacity: o, duration: 0.3 }, q(t)));
+
+          // c1 — 3D card + extruded gold "1"
+          swingIn("#c1 .ui-card", 0.5, -40, 0.8);
+          tl.fromTo("#c1-num", { rotationY: -80, opacity: 0 }, { rotationY: -18, opacity: 1, duration: 0.9, ease: "back.out(1.4)" }, q(1.26));
+          tl.to("#c1-num", { rotationY: 12, duration: 4.0, ease: "sine.inOut" }, q(2.2));
+          rise("#c1-k", 0.8, 0.4);
+          rise("#c1-w1", 1.26, 0.45, { scale: 0.9 });
+          rise("#c1-w2", 1.79, 0.45);
+          rise("#c1-w3", 2.27, 0.45);
+          rise("#c1-sub", 3.15, 0.5);
+          tl.fromTo("#c1-ul", { width: 0 }, { width: 250, duration: 0.6, ease: EI }, q(4.16));
+          exitCard("#c1 .ui-card", 6.35);
+
+          // c2 — tilted 3D bars card
+          tl.fromTo("#c2 .ui-card", { opacity: 0, rotationY: 55, x: 80 }, { opacity: 1, rotationY: -14, x: 0, duration: 0.8, ease: E }, q(6.4));
+          tl.to("#c2 .ui-card", { rotationY: -6, duration: 5.4, ease: "sine.inOut" }, q(7.2));
+          gsap.set(["#c2-r1", "#c2-r2", "#c2-r3"], { opacity: 0 });
+          rise("#c2-r1", 7.48, 0.4);
+          tl.fromTo("#c2-b1", { width: "0%" }, { width: "66.6%", duration: 0.9, ease: EI }, q(7.5));
+          rise("#c2-r2", 8.96, 0.4);
+          tl.fromTo("#c2-b2", { width: "0%" }, { width: "100%", duration: 0.9, ease: EI }, q(9.0));
+          rise("#c2-r3", 11.18, 0.4);
+          tl.fromTo("#c2-b3", { width: "0%" }, { width: "16.6%", duration: 0.7, ease: EI }, q(11.2));
+          exitCard("#c2 .ui-card", 12.9);
+
+          // c3 → c4 — flip-down card, 3D flipping step tiles
+          tl.fromTo("#c34 .ui-card", { opacity: 0, rotationX: -70, y: -30 }, { opacity: 1, rotationX: 0, y: 0, duration: 0.8, ease: E }, q(12.9));
+          rise("#c3-k", 13.1, 0.4);
+          rise("#c3-h", 13.56, 0.55);
+          tl.fromTo("#c3-hl", { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: EI }, q(16.36));
+          shine("#c34-shine", 16.45);
+          rise("#c3-m", 18.44, 0.45);
+          tl.to("#c3", { opacity: 0, y: -14, duration: 0.35, ease: "power2.in" }, q(20.1));
+          tl.fromTo("#c4", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, q(20.44));
+          gsap.set(["#c4-s1", "#c4-s2", "#c4-s3"], { opacity: 0.35, rotationY: 70 });
+          [["#c4-s1", 22.79], ["#c4-s2", 23.32], ["#c4-s3", 24.59]].forEach(([s, t]) => {
+            tl.to(s, { opacity: 1, rotationY: 0, duration: 0.55, ease: "back.out(1.6)" }, q(t));
+            tl.set(s, { className: "step on" }, q(t));
+          });
+          tl.fromTo("#c4-line", { width: 0 }, { width: 258, duration: 0.45, ease: EI }, q(22.9));
+          tl.to("#c4-line", { width: 516, duration: 0.8, ease: EI }, q(23.6));
+          rise("#c4-note", 21.41, 0.45);
+          exitCard("#c34 .ui-card", 26.0);
+
+          // c5 — let's start
+          tl.fromTo("#c5-p", { opacity: 0, y: 30, rotationX: -60 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.55, ease: E }, q(26.54));
+          tl.fromTo("#c5-p .arrow", { x: -6 }, { x: 4, duration: 0.5, ease: EI, yoyo: true, repeat: 1 }, q(27.1));
+          tl.to("#c5-p", { opacity: 0, y: 12, duration: 0.3, ease: "power2.in" }, q(28.3));
+
+          // c6 — quote card
+          swingIn("#c6 .ui-card", 30.5, -35, 0.7);
+          gsap.set(["#c6-w1", "#c6-w2", "#c6-w3", "#c6-w4", "#c6-r"], { opacity: 0 });
+          rise("#c6-w1", 30.77, 0.35);
+          rise("#c6-w2", 31.0, 0.35);
+          rise("#c6-w3", 31.13, 0.35);
+          rise("#c6-w4", 31.36, 0.5, { scale: 0.92 });
+          rise("#c6-r", 35.36, 0.45);
+          tl.to("#c6-ul", { width: 360, duration: 0.6, ease: EI }, q(35.92));
+          exitCard("#c6 .ui-card", 36.9);
+
+          // c7 — full screen, 3D tilted trade log
+          const grid = document.getElementById("c7-grid");
+          const HERO = 11 * 30 + 14;
+          for (let i = 0; i < 660; i++) { const c = document.createElement("i"); if (i === HERO) c.className = "hero"; grid.appendChild(c); }
+          tl.fromTo("#c7", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, q(36.95));
+          tl.to("#video-wrap", { opacity: 0, duration: 0.01 }, q(37.25));
+          rise("#c7-k", 37.1, 0.4);
+          rise("#c7-a", 38.1, 0.5);
+          tl.fromTo("#c7-p", { opacity: 0, rotationX: 62, rotationY: -38, rotationZ: 8, z: -300 }, { opacity: 1, rotationX: 32, rotationY: -24, rotationZ: 4, z: 0, duration: 1.0, ease: E }, q(37.05));
+          tl.to("#c7-p", { rotationX: 16, rotationY: -10, rotationZ: 1, duration: 5.4, ease: "sine.inOut" }, q(38.05));
+          gsap.set("#c7-grid i", { opacity: 0 });
+          tl.fromTo("#c7-grid i.hero", { opacity: 0, scale: 0.4, z: 0 }, { opacity: 1, scale: 1.25, z: 60, duration: 0.6, ease: "back.out(2)" }, q(38.66));
+          tl.to("#c7-grid i:not(.hero)", { opacity: 1, duration: 0.25, ease: "power1.out", stagger: { each: 0.0028, from: HERO, grid: [22, 30] } }, q(40.5));
+          rise("#c7-b", 40.5, 0.55);
+          tl.fromTo("#c7-b .gold-text", { scale: 0.94, transformOrigin: "left center" }, { scale: 1, duration: 0.5, ease: "back.out(1.6)" }, q(40.93));
+          tl.set("#video-wrap", { x: 480 }, q(43.2));
+          tl.to("#video-wrap", { opacity: 1, duration: 0.01 }, q(43.45));
+          tl.to("#c7", { opacity: 0, duration: 0.3, ease: "power2.in" }, q(43.45));
+
+          // c8 — split: myth list with 3D flipping rows
+          swingIn("#c8 .ui-card", 43.45, -30, 0.7);
+          gsap.set(["#c8-r1", "#c8-r2", "#c8-r3"], { opacity: 0, rotationX: -90 });
+          gsap.set(["#c8-v", "#c8-x2", "#c8-x3"], { opacity: 0 });
+          rise("#c8-h", 44.86, 0.45);
+          [["#c8-r1", 46.68], ["#c8-r2", 48.08], ["#c8-r3", 49.48]].forEach(([s, t]) => tl.to(s, { opacity: 1, rotationX: 0, duration: 0.55, ease: "back.out(1.4)" }, q(t)));
+          tl.to("#c8-s2", { width: 440, duration: 0.4, ease: EI }, q(50.64));
+          tl.to("#c8-s3", { width: 440, duration: 0.4, ease: EI }, q(50.78));
+          tl.fromTo(["#c8-x2", "#c8-x3"], { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", stagger: 0.12 }, q(50.64));
+          tl.fromTo("#c8-v", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, q(50.95));
+          tl.to("#c8", { opacity: 0, duration: 0.3, ease: "power2.in" }, q(51.3));
+          tl.to("#video-wrap", { x: 0, duration: 0.55, ease: EI }, q(51.3));
+
+          // c9 — beginner's luck
+          swingIn("#c9 .ui-card", 51.7, -35, 0.7);
+          gsap.set(["#c9-w1", "#c9-w2", "#c9-s", "#c9-c"], { opacity: 0 });
+          rise("#c9-w1", 51.98, 0.4);
+          rise("#c9-w2", 52.51, 0.4);
+          shine("#c9-shine", 52.8);
+          rise("#c9-s", 55.1, 0.45);
+          tl.fromTo("#c9-c", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, q(57.6));
+          exitCard("#c9 .ui-card", 58.25);
+
+          // c10 — 3D dashboard dolly
+          tl.fromTo("#c10", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power2.out" }, q(58.2));
+          tl.to("#video-wrap", { opacity: 0, duration: 0.01 }, q(58.45));
+          tl.fromTo("#c10-d", { rotationX: 34, y: 60, z: -200 }, { rotationX: 14, y: 0, z: 0, duration: 0.9, ease: E }, q(58.2));
+          tl.to("#c10-d", { rotationX: 4, duration: 3.4, ease: "sine.inOut" }, q(59.1));
+          rise("#c10-h", 58.4, 0.45);
+          ["#c10-up", "#c10-down"].forEach((s) => { const el = document.querySelector(s); const L = el.getTotalLength(); gsap.set(s, { strokeDasharray: L, strokeDashoffset: L, opacity: 0 }); });
+          gsap.set(["#c10-t1", "#c10-t2", "#c10-f"], { opacity: 0 });
+          tl.set("#c10-up", { opacity: 1 }, q(58.5));
+          tl.to("#c10-up", { strokeDashoffset: 0, duration: 1.2, ease: "power1.inOut" }, q(58.5));
+          tl.to("#c10-area", { opacity: 1, duration: 0.6 }, q(61.0));
+          tl.fromTo("#c10-peak", { opacity: 0, scale: 0.5, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, q(59.7));
+          rise("#c10-t1", 59.04, 0.4);
+          tl.set("#c10-down", { opacity: 1 }, q(60.55));
+          tl.to("#c10-down", { strokeDashoffset: 0, duration: 0.9, ease: "power2.in" }, q(60.55));
+          tl.fromTo("#c10-d", { x: 0 }, { x: 6, duration: 0.05, yoyo: true, repeat: 5, ease: "none" }, q(60.6));
+          rise("#c10-t2", 60.8, 0.4);
+          rise("#c10-f", 61.39, 0.45);
+
+          window.__timelines = window.__timelines || {};
+          window.__timelines["shubz-c9010"] = tl;
+        })();
+      </script>
+    </div>
+  </body>
+</html>
