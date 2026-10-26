@@ -1,11 +1,19 @@
 #!/bin/zsh
-# One-time setup on a new Mac for the shubz-edit skill.
-# Run after cloning this repo into ~/.claude/skills/shubz-edit:
+# One-time setup for the shubz-edit skill on macOS, Linux, or Windows (inside WSL).
+# Run after the skill is in ~/.claude/skills/shubz-edit:
 #   zsh ~/.claude/skills/shubz-edit/setup.sh
 set -e
 
+# Homebrew works on macOS and Linux and ships ffmpeg 8 + whisper-cpp on both
+if ! command -v brew >/dev/null; then
+  for b in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+    [[ -x $b ]] && eval "$($b shellenv)" && break
+  done
+fi
 command -v brew >/dev/null || { echo "Install Homebrew first: https://brew.sh"; exit 1; }
+
 command -v node >/dev/null || brew install node
+command -v python3 >/dev/null || brew install python
 command -v ffmpeg >/dev/null || brew install ffmpeg
 command -v whisper-cli >/dev/null || brew install whisper-cpp
 command -v claude >/dev/null || npm install -g @anthropic-ai/claude-code
